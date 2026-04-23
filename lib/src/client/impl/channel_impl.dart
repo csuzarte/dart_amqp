@@ -477,7 +477,12 @@ class _ChannelImpl implements Channel {
     if (_client.handshaking) {
       return;
     }
-    _abortOperationsAndCloseConsumers(exception);
+
+    try {
+      _abortOperationsAndCloseConsumers(exception);
+    } catch (_) {
+
+    }
   }
 
   void _abortOperationsAndCloseConsumers(Exception exception) {
@@ -492,7 +497,9 @@ class _ChannelImpl implements Channel {
 
     // Close any active consumers.
     for (_ConsumerImpl consumer in _consumers.values) {
-      consumer.close();
+       try {
+        consumer.close();
+      } catch (_) {}
     }
     _consumers.clear();
   }
